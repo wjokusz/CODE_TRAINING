@@ -1,0 +1,91 @@
+// Returns a random DNA base
+const returnRandBase = () => {
+  const dnaBases = ['A', 'T', 'C', 'G']
+  return dnaBases[Math.floor(Math.random() * 4)] 
+}
+
+// Returns a random single strand of DNA containing 15 bases
+const mockUpStrand = () => {
+  const newStrand = []
+  for (let i = 0; i < 15; i++) {
+    newStrand.push(returnRandBase())
+  }
+  return newStrand
+}
+
+function pAequorFactory(specimenNum, dna) {
+  return {specimenNum: specimenNum,
+  dna: dna,
+  mutate() {
+    const chosenBaseNumber = Math.floor((Math.random()) * dna.length);
+    const chosenBase = dna[chosenBaseNumber];
+    let newBase;
+    do {
+      newBase = returnRandBase(); 
+    } while (newBase === chosenBase);
+    dna[chosenBaseNumber] = newBase;
+  },
+  compareDNA(otherPAequor) {
+    const thisDNA = this.dna.slice();
+    const otherDNA = otherPAequor.dna.slice();
+
+    let commonAminos = 0;
+
+    for (let i=0; i< thisDNA.length; i++) {
+      if (thisDNA[i] === otherDNA[i]) {
+        commonAminos ++;
+      }
+    }
+          commonPercents = Math.round(commonAminos / thisDNA.length * 100);
+      console.log(`specimen #${this.specimenNum} and specimen #${otherPAequor.specimenNum} have ${commonPercents}% DNA in common`);
+  },
+  willLikelySurvive() {
+
+    const dnaTable = {
+      A: 0,
+      T: 0,
+      C: 0,
+      G: 0
+    }
+
+    for (let i=0; i<this.dna.length; i++) {
+      const nucleotide = this.dna[i];
+      dnaTable[nucleotide] ++;
+    }
+    const surviveChancePercent = Math.round(100 * ((((dnaTable.C + dnaTable.G)) / dna.length)));
+
+  if (surviveChancePercent >= 60) {
+    return true;
+  } else {
+    return false;
+  }
+  }
+  }
+}
+
+const assa = pAequorFactory(1, mockUpStrand())
+
+
+const bass = pAequorFactory(2, mockUpStrand());
+
+
+const superBeings = [];
+
+for (let i=0; i<30; i++) {
+  const specimenName = `specimen${i}`;
+  const specimenNew = pAequorFactory(specimenName, mockUpStrand());
+  if (specimenNew.willLikelySurvive()) {
+    superBeings.push(specimenNew);
+  } else {
+    do {
+      specimenNew.mutate();
+    } while (specimenNew.willLikelySurvive());
+    superBeings.push(specimenNew);
+  }
+}
+
+console.log(superBeings);
+
+
+
+
